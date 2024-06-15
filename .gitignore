@@ -1,0 +1,33 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Build and distribution directories
+build/
+dist/
+
+# Operating system files
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+# IDE/editor-specific files
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+*.tmp
+*.bak
+
+
+# pocketbase data
+pb_data/
+pb_migrations/
+
