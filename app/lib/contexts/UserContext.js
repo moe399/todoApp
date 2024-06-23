@@ -7,8 +7,10 @@ import pocketBase from "../pocketbase";
 
 export const UserContext = createContext();
 export default function UserContextProivder({ children }) {
+  
+  
+  
   const API_BASE_URL = "http://127.0.0.1:8090";
-
   const [userDetails, setUserDetails] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
 
@@ -16,10 +18,18 @@ export default function UserContextProivder({ children }) {
   useEffect(() => {
 
     console.log("isAuth has changed: " + isAuth);
+    
+    if(isAuth == true && pocketBase.authStore.isValid == true){
+
+      console.log("DEFO TRUE")
+
+    }
 
 
   }, [isAuth])
 
+
+ 
   async function login(data) {
 
 
@@ -29,19 +39,24 @@ export default function UserContextProivder({ children }) {
           password: data.password,
         };
 
-        
+        try{
     const authData = await pocketBase.collection('users').authWithPassword(
   data.username,
   data.password,
     );
 
     authData
+    setIsAuth(true)
 
 
     console.log(pocketBase.authStore.isValid);
 console.log(pocketBase.authStore.token);
 console.log(pocketBase.authStore.model.id);
+  }
 
+  catch(e){
+    console.log(e)
+  }
 
 
 
@@ -76,8 +91,45 @@ console.log(pocketBase.authStore.model.id);
 
     }
 
+
+   async function signup(data){
+
+
+    console.log("passedin data" + data.username)
+
+
+      
+      if (data != null) {
+        const dataToSend = {
+          "username":data.username,
+          "password" : data.password,
+          "passwordConfirm": data.passwordConfirm
+        }
+
+        try{
+    const record = await pocketBase.collection('users').create(dataToSend);
+
+ 
+
+    console.log(record)
+
+
+        }
+
+  catch(e){
+    console.log(e)
+  }
+
+
+
+
+    }}
+
   function logout() {
     pocketBase.authStore.clear()
+    localStorage.setItem("id", "")
+    setIsAuth(false)
+    
    
   }
 
@@ -88,6 +140,7 @@ console.log(pocketBase.authStore.model.id);
     setIsAuth,
     login,
     logout,
+    signup
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

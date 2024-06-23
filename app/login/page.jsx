@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@nextui-org/react'
 import Pocketbase from 'pocketbase'
 import pocketBase from '../lib/pocketbase'
+import Link from 'next/link'
 
 
 
@@ -49,6 +50,42 @@ const [loading, setLoading] = useState(false);
 // }, [])
 
 
+useEffect(() => {
+
+
+
+  if(pocketBase.authStore.isValid == true){
+
+    console.log("DEFO TRUE")
+    router.push("/todo")
+
+  }
+
+  else{
+    console.log("NOT TRUE NOT LOGGIED IN OR ")
+  }
+
+
+}, [])
+
+
+useEffect(() => {
+
+
+  console.log("Use effect auth state has changed")
+  // router.push("/todo")
+
+  if(isAuth == true){
+    router.push("/todo")
+  }
+
+
+
+}, [isAuth])
+
+
+
+
 async function onSubmit(data){
   setLoading(true)
 
@@ -59,6 +96,7 @@ async function onSubmit(data){
 
   if(isAuth == true ){
     setLoading(false)
+    router.push("/todo")
 
   }
 
@@ -79,8 +117,8 @@ async function onSubmit(data){
 
 <h1 className='text-white text-2xl font-bold'>Login</h1>
 
-<div className='py-10 flex h-fit gap-6 flex-col items-center' onSubmit={handleSubmit(onSubmit)}>
-        <form className='flex flex-col gap-6 items-center'>
+<div className='py-10 flex h-fit gap-6 flex-col items-center'>
+        <form className='flex flex-col gap-6 items-center' onSubmit={handleSubmit(onSubmit)}>
         <input {...register("username")} className="bg-transparent border-2 border-[#3E1671] px-2 py-2 rounded-xl text-white " placeholder='Username'></input>
         <input {...register("password")} className="bg-transparent border-2 border-[#3E1671] px-2 py-2 rounded-xl text-white " placeholder='Password' type='password'></input>
         <Button isLoading={loading} className='w-1/2 bg-[#9E78CF] px-2 py-1 rounded-lg text-white text-md' onClick={handleSubmit(onSubmit)}>Login</Button>
@@ -88,8 +126,7 @@ async function onSubmit(data){
         </form>
 
 
-        <Button onClick={()=> console.log(pocketBase.authStore.isValid)}>Test Button</Button>
-
+        <p className='text-md text-white'>Don't have an account? <span onClick={() => router.push("/signup")}className='text-purple-300'>Sign up here</span></p>
       </div>
 
 

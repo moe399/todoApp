@@ -27,7 +27,7 @@ useEffect(() => {
 
   if(localStorage.getItem("loginState") == "true" ){
 
-    setIsAuth(true);
+    // setIsAuth(true);
 
   }
 
@@ -67,9 +67,11 @@ useEffect(() => {
         </DropdownMenu>
       </Dropdown>
 
-        : <Button onClick={() => router.push("/login")}>Log in</Button>
-        
-        
+        : 
+        <div className='flex gap-4'>
+        <Button onClick={() => router.push("/login")}>Log in</Button>
+        <Button className='hidden md:inline-block'>Sign up</Button>
+        </div>
         
         }
 

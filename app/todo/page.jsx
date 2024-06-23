@@ -7,21 +7,25 @@ import { Button, Progress, ScrollShadow, Skeleton } from "@nextui-org/react";
 import { UserContext } from "../lib/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import TodoContextProvider, { TodosContext } from "../lib/contexts/TodoContext";
-import { get } from "react-hook-form";
+import {useForm } from "react-hook-form";
 import Confetti from "react-confetti"
 import { useWindowSize } from "@uidotdev/usehooks";
 import AllTasksDone from "../components/AllTasksDone";
 import NoTasksDone from "../components/NoTasksDone";
+import pocketBase from "../lib/pocketbase";
 
 
 export default function page() {
   const [progessValue, setProgessValue] = useState(60);
   const {width, height} = useWindowSize();
+  
 
   const { userDetails, setUserDetails, isAuth, setIsAuth, login, logout } =
     useContext(UserContext);
 
     const [numberOfConfetti, setNumberOfConfetti] = useState(0);
+
+    const [task, setTask] = useState("")
 
 
 
@@ -57,6 +61,7 @@ export default function page() {
     getNotDoneTodos,
     loaded,
     setLoaded,
+    createTask
   } = useContext(TodosContext);
 
   const router = useRouter();
@@ -70,6 +75,22 @@ export default function page() {
     return percentageCompleted;
   }
 
+
+  function handleTaskChange(e){
+
+    setTask(e.target.value)
+
+  }
+
+ async function handleCreateTask(){
+
+
+    await createTask(task)
+    setTask("")
+
+
+
+  }
 
    function handleShowConfetti(){
 
@@ -94,7 +115,7 @@ export default function page() {
   // implenet use effect
 
   useEffect(() => {
-    if (localStorage.getItem("loginState") == "true") {
+    if (localStorage.getItem("loginState")  == "true") {
       setIsAuth(true);
     } else {
       router.push("/login");
@@ -109,6 +130,7 @@ export default function page() {
 
   useEffect(() => {
     fetchTodos();
+    console.log(doneTodos)
     console.log("USEEFFECT RAN")
   }, []);
 
@@ -118,10 +140,12 @@ export default function page() {
     <main className="bg-[#0D0714] h-screen flex  flex-col items-center px-8 gap-4 lg:gap-8 overflow-hidden">
       <div className="py-10 flex h-fit gap-4 border-0 w-full md:w-1/2 justify-center">
         <input
+          onChange={handleTaskChange}
           className="bg-transparent border-2 border-[#3E1671] px-2 py-2 rounded-xl text-white w-full max-w-96 "
           placeholder="Add a new task"
+          value={task}
         ></input>
-        <button className="bg-[#9E78CF] px-3 py-1 rounded-lg text-white text-3xl">
+        <button onClick={() => handleCreateTask()} className="bg-[#9E78CF] px-3 py-1 rounded-lg text-white text-3xl">
           +
         </button>
       </div>
@@ -136,6 +160,8 @@ export default function page() {
         <ScrollShadow className="flex flex-col gap-6 h-[200px] lg:h-[250px] ">
 
           {/* is loaded? then loop through this*/}
+          
+          
 
           {notDoneNumberTodos >= 1 && loaded == true ? 
           
@@ -257,6 +283,7 @@ export default function page() {
         </p>
 
         <Button onClick={() => setMotivationQuoteIndex(Math.floor(Math.random() * 15))}>Refresh Quote</Button>
+        
 
         <Confetti initialVelocityY={8} numberOfPieces={numberOfConfetti}  width={width} height={height}></Confetti>
       </div>

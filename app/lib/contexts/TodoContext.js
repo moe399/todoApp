@@ -1,4 +1,5 @@
-import Pocketbase from 'pocketbase'
+import pocketBase from "../pocketbase";
+
 
 
 const { default: axios } = require("axios");
@@ -13,57 +14,30 @@ export default function TodoContextProvider({ children }) {
   const [doneNumberTodos, setDoneNumberTodos] = useState();
   const [loaded, setLoaded] = useState(false);
 
+
   const API_BASE_URL = "http://127.0.0.1:8090";
 
 
-  const pb = new Pocketbase(API_BASE_URL);
-  
 
-  //   async function getTodos() {
 
-  //     // await new Promise(resolve => setTimeout(resolve, 3000))
 
-  //     const headers = {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${localStorage.getItem("token")}`
-  //       };
 
-  //     await axios
-  //       .get(
-  //         `${API_BASE_URL}/api/collections/todo/records?filter=(user='${localStorage.getItem(
-  //           "id"
-  //         )}')`, {headers},
-
-  //       )
-  //       .then((res) => {
-  //         setDoneTodos(res.data.items);
-  //         setNumberOfTodos(res.data.totalItems);
-  //         // console.log(res.data)
-  //         // console.log(`REQUESTS + ${API_BASE_URL}/api/collections/todo/records?filter=(user='${localStorage.getItem(
-  //         //     "id"
-  //         //   )}')`)
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-
-  //   }
-
-  // Todos that are NOT done
   async function getNotDoneTodos() {
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${pocketBase.authStore.token}`,
     };
+
+
+    const filterParas = encodeURIComponent(`done=false&&user='${pocketBase.authStore.model.id}'`)
+    
 
     await axios
       .get(
-        `${API_BASE_URL}/api/collections/todo/records?filter=%28user%3D%27${localStorage.getItem(
-          "id"
-        )}%27%26%26done%3Dfalse%29`,
-        { headers }
+        `${API_BASE_URL}/api/collections/todo/records?filter=(${filterParas})`,{ headers }
       )
       .then((res) => {
+
         setNotDoneTodos(res.data.items);
         setNotDoneNumberTodos(res.data.totalItems);
         // console.log(res.data)
@@ -76,18 +50,38 @@ export default function TodoContextProvider({ children }) {
       });
   }
 
+
+
+
+
+
+
+
   async function getDoneTodos() {
+
+
+
+    // Check solution for encoded username string 
+
+
+    const filterParas = encodeURIComponent(`done=true&&user='${pocketBase.authStore.model.id}'`)
+
+
+
+  //  await http.get(`/api/collections/settings/records?filter=(${filterParas })`, {...})
+
+
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${pocketBase.authStore.token}`,
     };
 
     await axios
       .get(
-        `${API_BASE_URL}/api/collections/todo/records?filter=%28user%3D%27${localStorage.getItem(
-          "id")}%27%26%26done%3Dtrue%29`,{ headers }
+        `${API_BASE_URL}/api/collections/todo/records?filter=(${filterParas})`,{ headers }
       )
       .then((res) => {
+
         setDoneTodos(res.data.items);
         setDoneNumberTodos(res.data.totalItems);
         // console.log(res.data)
@@ -104,7 +98,38 @@ export default function TodoContextProvider({ children }) {
   async function createTask(name){
 
 
+    try{
+
+    console.log("Passed in create function name" + name)
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${pocketBase.authStore.token}`,
+    };
+
+    const data = {
+      "title" : name,
+      "user": pocketBase.authStore.model.id
+    }
+
+
+    await axios.post(`${API_BASE_URL}/api/collections/todo/records`, data, {headers})
+    .then((res) => {
+      console.log(res)
+    })
+
+
+    await getDoneTodos()
+    await getNotDoneTodos()
+
     
+  }
+
+
+  catch(e){
+
+    console.log(e)
+  }
 
 
 
@@ -115,7 +140,7 @@ export default function TodoContextProvider({ children }) {
 
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${pocketBase.authStore.token}`,
     };
 
 
@@ -136,7 +161,7 @@ export default function TodoContextProvider({ children }) {
 
 
         }
-
+ 
 
         else{
             console.error(`Unexpected status code: ${res.status}`);
@@ -159,7 +184,7 @@ export default function TodoContextProvider({ children }) {
 
     const headers = {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${pocketBase.authStore.token}`,
       };
   
           
@@ -206,7 +231,8 @@ export default function TodoContextProvider({ children }) {
     loaded,
     setLoaded,
     markCompleted,
-    deleteTask
+    deleteTask,
+    createTask
   };
 
   return (
