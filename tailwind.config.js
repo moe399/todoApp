@@ -12,6 +12,34 @@ module.exports = {
   theme: {
     extend: {
     
+      // fontFamily: {
+      //   inter: ['Inter'],
+      //   roboto: ['Roboto']
+
+      // }
+
     },
   },
-  plugins: [nextui()],};
+  plugins: [nextui({
+    colors: {
+      white: {
+        "white" : "#FFFFFF"
+      }
+    }
+  }),
+
+
+    
+
+
+  ],
+
+
+
+
+
+
+
+
+
+};

@@ -13,9 +13,10 @@ export default function TodoContextProvider({ children }) {
   const [notDoneNumberTodos, setNotDoneNumberTodos] = useState();
   const [doneNumberTodos, setDoneNumberTodos] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [addLoading, setAddLoading] = useState(false)
 
 
-  const API_BASE_URL = "http://127.0.0.1:8090";
+  const API_BASE_URL = process.env.apiBaseUrl;
 
 
 
@@ -40,13 +41,9 @@ export default function TodoContextProvider({ children }) {
 
         setNotDoneTodos(res.data.items);
         setNotDoneNumberTodos(res.data.totalItems);
-        // console.log(res.data)
-        // console.log(`REQUESTS + ${API_BASE_URL}/api/collections/todo/records?filter=(user='${localStorage.getItem(
-        //     "id"
-        //   )}')`)
+     
       })
       .catch((error) => {
-        console.log(error);
       });
   }
 
@@ -84,13 +81,9 @@ export default function TodoContextProvider({ children }) {
 
         setDoneTodos(res.data.items);
         setDoneNumberTodos(res.data.totalItems);
-        // console.log(res.data)
-        // console.log(`REQUESTS + ${API_BASE_URL}/api/collections/todo/records?filter=(user='${localStorage.getItem(
-        //     "id"
-        //   )}')`)
+     
       })
       .catch((error) => {
-        console.log(error);
       });
   }
 
@@ -98,9 +91,10 @@ export default function TodoContextProvider({ children }) {
   async function createTask(name){
 
 
+    setAddLoading(true)
+
     try{
 
-    console.log("Passed in create function name" + name)
 
     const headers = {
       "Content-Type": "application/json",
@@ -115,8 +109,9 @@ export default function TodoContextProvider({ children }) {
 
     await axios.post(`${API_BASE_URL}/api/collections/todo/records`, data, {headers})
     .then((res) => {
-      console.log(res)
     })
+
+    setAddLoading(false)
 
 
     await getDoneTodos()
@@ -127,8 +122,7 @@ export default function TodoContextProvider({ children }) {
 
 
   catch(e){
-
-    console.log(e)
+    setAddLoading(false)
   }
 
 
@@ -214,10 +208,6 @@ export default function TodoContextProvider({ children }) {
 
   }
 
-  console.log("notDoneTodos " + notDoneTodos);
-
-  //    setLoaded(true)
-  //http://localhost:8090/api/collections/todo/records?filter=(user='42mlbpr6nj1l50e')
 
   const value = {
     doneTodos,
@@ -232,7 +222,8 @@ export default function TodoContextProvider({ children }) {
     setLoaded,
     markCompleted,
     deleteTask,
-    createTask
+    createTask,
+    addLoading
   };
 
   return (

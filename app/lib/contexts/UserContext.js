@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import pocketBase from "../pocketbase";
+import { useRouter } from "next/navigation";
 
 
 export const UserContext = createContext();
@@ -10,18 +11,21 @@ export default function UserContextProivder({ children }) {
   
   
   
-  const API_BASE_URL = "http://127.0.0.1:8090";
+  const API_BASE_URL = process.env.apiBaseUrl;
+
+
   const [userDetails, setUserDetails] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
 
+  const router = useRouter()
 
   useEffect(() => {
 
-    console.log("isAuth has changed: " + isAuth);
+
     
     if(isAuth == true && pocketBase.authStore.isValid == true){
 
-      console.log("DEFO TRUE")
+  
 
     }
 
@@ -47,43 +51,17 @@ export default function UserContextProivder({ children }) {
 
     authData
     setIsAuth(true)
+    
 
 
-    console.log(pocketBase.authStore.isValid);
-console.log(pocketBase.authStore.token);
-console.log(pocketBase.authStore.model.id);
   }
 
   catch(e){
-    console.log(e)
   }
 
 
 
-      //  await axios
-      //     .post(
-      //       `${API_BASE_URL}/api/collections/users/auth-with-password`,
-      //       dataToSend
-      //     )
-      //     .then((res) => {
-      //       setIsAuth(true);
-      //       setUserDetails(res.data.record);
-      //       localStorage.setItem("token", res.data.token)
-      //       localStorage.setItem("username", res.data.record.username )
-      //       localStorage.setItem("id", res.data.record.id )
-      //       localStorage.setItem("loginState", "true");
-      //       console.log("loginfunction inside then block isAuth" + isAuth)
 
-            
-
-      //     })
-      //     .catch((e) => {
-            
-      //       console.log("error")
-           
-
-
-      //     } );
 
       }
 
@@ -95,7 +73,6 @@ console.log(pocketBase.authStore.model.id);
    async function signup(data){
 
 
-    console.log("passedin data" + data.username)
 
 
       
@@ -108,16 +85,14 @@ console.log(pocketBase.authStore.model.id);
 
         try{
     const record = await pocketBase.collection('users').create(dataToSend);
-
+          router.push("/login")
  
 
-    console.log(record)
 
 
         }
 
   catch(e){
-    console.log(e)
   }
 
 

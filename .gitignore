@@ -8,6 +8,7 @@ npm-debug.log*
 
 # Environment variables
 .env
+.env.local
 
 # Build and distribution directories
 build/

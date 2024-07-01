@@ -16,7 +16,6 @@ export default function page() {
 
   const router = useRouter()
 
-  const API_BASE_URL = "http://127.0.0.1:8090";
 
 
 
@@ -35,48 +34,19 @@ const {register, handleSubmit} = useForm();
 const [loading, setLoading] = useState(false);
 
 
-// useEffect(()=>{
-
-
-//   if(pb.authStore.isValid == true){
-
-   
-//     router.push("/todo")
-
-
-//   }
-  
-
-// }, [])
 
 
 useEffect(() => {
 
 
-
-  if(pocketBase.authStore.isValid == true){
-
-    console.log("DEFO TRUE")
-    router.push("/todo")
-
-  }
-
-  else{
-    console.log("NOT TRUE NOT LOGGIED IN OR ")
-  }
-
-
-}, [])
-
-
-useEffect(() => {
-
-
-  console.log("Use effect auth state has changed")
   // router.push("/todo")
 
-  if(isAuth == true){
+  if(pocketBase.authStore.isValid == true){
+    setIsAuth(true)
     router.push("/todo")
+  }
+  else{
+    setIsAuth(false)
   }
 
 

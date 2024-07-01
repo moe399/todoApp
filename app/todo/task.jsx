@@ -19,16 +19,14 @@ export default function Task(props) {
   async function handleMarkComplete() {
     // let outputOfFunction = await markCompleted(props.id)
 
-    // console.log("OUTPUT OF FUNCTION:", outputOfFunction);
+    
 
     if ((await markCompleted(props.id)) == true) {
-      console.log("Done State move WAS sucessful ");
 
       props.handleShowConfetti();
 
       setTickLoading(false);
     } else {
-      console.log("EROR STATE IN TASK");
 
       setTickLoading(false);
     }
@@ -40,12 +38,10 @@ export default function Task(props) {
 
     
     if ((await deleteTask(props.id)) == true) {
-      console.log("Done State move WAS sucessful ");
 
 
       setTickLoading(false);
     } else {
-      console.log("EROR STATE IN TASK");
 
       setTickLoading(false);
     }

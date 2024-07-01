@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Task from "./task";
 import Donetask from "./donetask";
-import { Button, Progress, ScrollShadow, Skeleton } from "@nextui-org/react";
+import { Button, Progress, ScrollShadow, Skeleton, Spinner } from "@nextui-org/react";
 import { UserContext } from "../lib/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import TodoContextProvider, { TodosContext } from "../lib/contexts/TodoContext";
@@ -61,7 +61,8 @@ export default function page() {
     getNotDoneTodos,
     loaded,
     setLoaded,
-    createTask
+    createTask,
+    addLoading
   } = useContext(TodosContext);
 
   const router = useRouter();
@@ -94,7 +95,6 @@ export default function page() {
 
    function handleShowConfetti(){
 
-    console.log("Handle Show Confetti called!")
 
      setNumberOfConfetti(200)
      
@@ -115,7 +115,7 @@ export default function page() {
   // implenet use effect
 
   useEffect(() => {
-    if (localStorage.getItem("loginState")  == "true") {
+    if (pocketBase.authStore.isValid == true) {
       setIsAuth(true);
     } else {
       router.push("/login");
@@ -130,11 +130,9 @@ export default function page() {
 
   useEffect(() => {
     fetchTodos();
-    console.log(doneTodos)
-    console.log("USEEFFECT RAN")
+
   }, []);
 
-  console.log("ALL TODOS: " + doneTodos);
 
   return (
     <main className="bg-[#0D0714] h-screen flex  flex-col items-center px-8 gap-4 lg:gap-8 overflow-hidden">
@@ -145,8 +143,9 @@ export default function page() {
           placeholder="Add a new task"
           value={task}
         ></input>
+
         <button onClick={() => handleCreateTask()} className="bg-[#9E78CF] px-3 py-1 rounded-lg text-white text-3xl">
-          +
+          {addLoading == true ? <Spinner color="white"/> : "+"}
         </button>
       </div>
 
@@ -283,7 +282,7 @@ export default function page() {
         </p>
 
         <Button onClick={() => setMotivationQuoteIndex(Math.floor(Math.random() * 15))}>Refresh Quote</Button>
-        
+
 
         <Confetti initialVelocityY={8} numberOfPieces={numberOfConfetti}  width={width} height={height}></Confetti>
       </div>
