@@ -23,4 +23,4 @@ Throughout this project, I have learned and implemented:
 -   State management with React Context API
 -   Form handling with React Hook Form
 
-Thank you for checking out my repo! I hope you find this project helpful and insightful.
+Thank you for checking out my repo!
