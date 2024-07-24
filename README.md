@@ -1,6 +1,6 @@
 # Next.js Todo App
 
-Live Link: https://todo-p5iyyli9n-moe399s-projects.vercel.app/
+Live Link: https://todo-app-ebon-theta-48.vercel.app
 
 This project is a simple Todo application with a landing page, built using Next.js for the frontend and Pocketbase as the backend. The app demonstrates various features such as CRUD operations, React Context, React Hook Form, and more.
 
